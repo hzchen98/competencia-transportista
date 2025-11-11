@@ -20,23 +20,23 @@ services:
       retries: 10
       start_period: 5s
 
-  loader:
-    build: web
-    depends_on:
-      db:
-        condition: service_healthy
-      streamlit:
-        condition: service_started
-    working_dir: /app/db
-    volumes:
-      - ./:/app
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_NAME: quizdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
-    command: python load_questions.py
-    restart: "no"
+#  loader:
+#    build: web
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      streamlit:
+#        condition: service_started
+#    working_dir: /app/db
+#    volumes:
+#      - ./:/app
+#    environment:
+#      POSTGRES_HOST: db
+#      POSTGRES_NAME: quizdb
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: your_password
+#    command: python load_questions.py
+#    restart: "no"
 
   streamlit:
     build: web
