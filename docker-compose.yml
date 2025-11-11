@@ -40,7 +40,7 @@ services:
     restart: "no"
 
   streamlit:
-    build: .
+    build: web
     depends_on:
       db:
         condition: service_healthy
