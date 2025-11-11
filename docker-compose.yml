@@ -1,0 +1,59 @@
+# File: `docker-compose.yml`
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: quizdb
+    ports:
+      - 5439:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d quizdb -h 127.0.0.1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  loader:
+    image: python:3.11-slim
+    depends_on:
+      db:
+        condition: service_healthy
+    working_dir: /app/db
+    volumes:
+      - ./:/app
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_NAME: quizdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+    entrypoint: [ "bash", "-c" ]
+    command: >
+      pip install --no-cache-dir psycopg2-binary &&
+      python load_questions.py
+    restart: "no"
+
+  streamlit:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8501:8501"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_NAME: quizdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - ./:/app
+    command: streamlit run web/quiz_app.py --server.port 8501 --server.address 0.0.0.0
+
+volumes:
+  db_data:
