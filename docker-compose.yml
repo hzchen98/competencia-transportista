@@ -21,10 +21,12 @@ services:
       start_period: 5s
 
   loader:
-    image: python:3.11-slim
+    build: web
     depends_on:
       db:
         condition: service_healthy
+      streamlit:
+        condition: service_started
     working_dir: /app/db
     volumes:
       - ./:/app
@@ -33,10 +35,7 @@ services:
       POSTGRES_NAME: quizdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: your_password
-    entrypoint: [ "bash", "-c" ]
-    command: >
-      pip install --no-cache-dir psycopg2-binary &&
-      python load_questions.py
+    command: python load_questions.py
     restart: "no"
 
   streamlit:
