@@ -52,7 +52,7 @@ services:
       POSTGRES_PASSWORD: your_password
     volumes:
       - ./:/app
-    command: streamlit run web/quiz_app.py --server.port 8501 --server.address 0.0.0.0
+    command: streamlit run web/new_quiz.py --server.port 8501 --server.address 0.0.0.0
 
 volumes:
   db_data:

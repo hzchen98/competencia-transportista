@@ -85,9 +85,9 @@ if mode == "Free Quiz":
 # =======================
 elif mode == "Exam Test":
     if category == "practico":
-        question_options = [4, 6, 8, 10]
+        question_options = [2, 4, 6, 8, 10]
     else:
-        question_options = [10, 20, 30, 40, 50, 100]
+        question_options = [10, 20, 30, 40, 50, 100, 150]
 
     num = st.sidebar.selectbox("📄 Number of questions:", question_options, index=0)
 
