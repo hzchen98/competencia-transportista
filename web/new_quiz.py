@@ -155,6 +155,22 @@ def main():
             if st.session_state.index >= total_q:
                 st.session_state.finished = True
 
+        # SKIP QUESTION
+        if mode in ["Exam Test", "Exam Mode"]:
+            if st.button("Skip"):
+                # store question but with NO answer
+                st.session_state.responses.append({
+                    "question_id": q_id,
+                    "question": question,
+                    "options": options,
+                    "correct": correct,
+                    "user_answer": None
+                })
+
+                st.session_state.index += 1
+                if st.session_state.index >= total_q:
+                    st.session_state.finished = True
+
         # Timer for Exam Mode
         if mode == "Exam Mode" and st.session_state.start_time:
             elapsed = time.time() - st.session_state.start_time
@@ -188,16 +204,21 @@ def main():
         # Review section
         st.subheader("📝 Review Answers")
         for i, r in enumerate(st.session_state.responses, 1):
-            is_correct = r["user_answer"] == r["correct"]
-            color = "green" if is_correct else "red"
             st.markdown(f"**{i}. {r['question']}**")
+
+            if r["user_answer"] is None:
+                st.warning("⏭ Skipped question")
+
             for opt in r["options"]:
                 if opt == r["correct"]:
-                    st.markdown(f"- ✅ **{opt}** {r['options'][opt]} (correct)")
+                    st.markdown(f"- ✅ **{opt}** (correct)")
+                elif r["user_answer"] is None:
+                    st.markdown(f"- {opt}")
                 elif opt == r["user_answer"]:
-                    st.markdown(f"- ❌ **{opt}** {r['options'][opt]} (your answer)")
+                    st.markdown(f"- ❌ **{opt}** (your answer)")
                 else:
-                    st.markdown(f"- {opt} {r['options'][opt]}")
+                    st.markdown(f"- {opt}")
+
             st.markdown("---")
 
         if st.button("Restart"):
