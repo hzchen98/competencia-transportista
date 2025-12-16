@@ -211,13 +211,13 @@ def main():
 
             for opt in r["options"]:
                 if opt == r["correct"]:
-                    st.markdown(f"- ✅ **{opt}** (correct)")
+                    st.markdown(f"- ✅ **{opt}** (correct): {r['options'][opt]}")
                 elif r["user_answer"] is None:
-                    st.markdown(f"- {opt}")
+                    st.markdown(f"- {opt} {r['options'][opt]}")
                 elif opt == r["user_answer"]:
-                    st.markdown(f"- ❌ **{opt}** (your answer)")
+                    st.markdown(f"- ❌ **{opt}** (your answer): {r['options'][opt]}")
                 else:
-                    st.markdown(f"- {opt}")
+                    st.markdown(f"- {opt} {r['options'][opt]}")
 
             st.markdown("---")
 
